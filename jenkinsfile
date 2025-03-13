@@ -42,4 +42,14 @@ pipeline {
             junit 'test-result/junit.xml'
         }
     }
+
+    stage ('E2E') {
+
+    }    
+    steps {
+        npm install -g serve
+        serve -s build
+        npx playwright test
+        }
+    }
 }
