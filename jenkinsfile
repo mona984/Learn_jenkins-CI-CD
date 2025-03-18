@@ -1,26 +1,21 @@
 pipeline {
     agent any
-
-/*    stages {
-        stage('Build') {
+    stages {
+        stage('Deploy') {
             agent {
                 docker {
                     image 'node:18-alpine'
                     reuseNode true
-
                 }
             }
             steps {
                 sh '''
-                    ls -la
-                    node --version
-                    npm --version
-                    npm ci
-                    npm run build
-                    ls -la
+                    npm install netlify-cli -g
+                    netlify --version
+                    
                 '''
+                }
             }
-        }*/
                     stage('tests') {
                         parallel {
                             stage('Unit tests') {
@@ -28,7 +23,6 @@ pipeline {
                                     docker {
                                         image 'node:18-alpine'
                                         reuseNode true
-
                                     }
                                 }
                                 steps {
@@ -60,11 +54,29 @@ pipeline {
                                 post {
                                     always {
                                         publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: '', useWrapperFileDirectly: true])
-                                        }
                                     }
                                 }
                             }
                         }
                     }
+        stage('Build') {
+            agent {
+                docker {
+                    image 'node:18-alpine'
+                    reuseNode true
                 }
+            }
+            steps {
+                sh '''
+                    ls -la
+                    node --version
+                    npm --version
+                    npm ci
+                    npm run build
+                    ls -la
+                '''
+                }
+            }
+                }
+            }
            
